@@ -1,59 +1,31 @@
-# CalculadoraProyec
+# Calculadora de Obra - Proyect
+> **Solución digital para la dosificación precisa de concreto en sitio.**
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.3.
+[![Angular](https://img.shields.io/badge/Angular-18+-DD0031?style=for-the-badge&logo=angular&logoColor=white)](https://angular.dev/)
+[![Firebase](https://img.shields.io/badge/Firebase-Hosting-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)](https://firebase.google.com/)
 
-## Development server
+Esta aplicación fue diseñada para facilitar el trabajo de ingenieros y maestros de obra en Barranquilla y cualquier parte del mundo, permitiendo calcular la cantidad exacta de materiales (cemento, arena, piedra y agua) según el volumen de los elementos estructurales.
 
-To start a local development server, run:
+## Demo en Vivo
+Puedes probar la aplicación funcionando aquí:  
+**[https://proyecto-calculadora-obra.web.app](https://proyecto-calculadora-obra.web.app)**
 
-```bash
-ng serve
-```
+## Características Principales
+- **Cálculo de Volumetría:** Soporte para columnas rectangulares y circulares.
+- **Dosificaciones Exactas:** Basado en resistencias estándar ($f'c$ 140, 210, 245, 280 kg/cm²).
+- **Factor de Desperdicio:** Incluye automáticamente un **5%** para evitar faltantes en obra.
+- **Historial Local:** Registro de cálculos recientes por zona o eje de construcción.
+- **Acceso Protegido:** Módulo de Login integrado para control de acceso.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Tecnologías Utilizadas
+- **Framework:** Angular 18 (Standalone Components).
+- **Estilos:** CSS3 / Bootstrap (Diseño responsivo para móviles).
+- **Infraestructura:** Firebase Hosting para despliegue global.
+- **Control de Versiones:** Git & GitHub.
 
-## Code scaffolding
+## Instalación Local
+Si deseas clonar este proyecto y ejecutarlo en tu máquina:
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+1. **Clonar el repositorio:**
+   ```bash 
+   git clone [https://github.com/EdinsonSantiago89/calculadora-proyec.git](https://github.com/EdinsonSantiago89/calculadora-proyec.git)
