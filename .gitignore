@@ -6,6 +6,11 @@
 /out-tsc
 /bazel-out
 
+/node_modules
+/.angular
+/dist
+.env
+
 node_modules/
 dist/
 .angular/
@@ -47,3 +52,4 @@ __screenshots__/
 # System files
 .DS_Store
 Thumbs.db
+

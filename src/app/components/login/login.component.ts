@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/authservice';
 
 @Component({
   selector: 'app-login',
@@ -10,18 +11,22 @@ import { Router } from '@angular/router';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent {
-  usuario: string = '';
+export class LoginComponent { // <--- El código debe ir DESPUÉS de esta llave
+  usuario: string = ''; 
   clave: string = '';
 
-  constructor(private router: Router) {}
+  private authService = inject(AuthService);
+  private router = inject(Router);
 
   ingresar() {
-    // Por ahora, usaremos una validación simple (luego usaremos Firebase Auth)
-    if (this.usuario === 'admin' && this.clave === '1234') {
-      this.router.navigate(['/calculadora']);
-    } else {
-      alert('Usuario o contraseña incorrectos. Intenta con admin / 1234');
-    }
+    this.authService.login(this.usuario, this.clave)
+      .then(response => {
+        console.log("¡Bienvenido!", response);
+        this.router.navigate(['/calculadora']); 
+      })
+      .catch(error => {
+        alert("Acceso denegado. Verifique su correo y contraseña en Firebase.");
+        console.error(error);
+      });
   }
-}
+} // <--- Asegúrate de que esta llave sea la ÚLTIMA del archivo

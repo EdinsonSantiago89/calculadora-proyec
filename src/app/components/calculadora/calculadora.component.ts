@@ -14,13 +14,11 @@ export class CalculadoraComponent {
   zona: string = '';
   historial: any[] = [];
 
-  // Variables para la columna Rectangular
-  largo: number = 0;
-  ancho: number = 0;
-  alto: number = 0;
-  
-  // Variables para la columna Circular
-  diametro: number = 0;
+  // 1. IMPORTANTE: Inicializamos como undefined para que se vea el placeholder
+  largo?: number;
+  ancho?: number;
+  alto?: number;
+  diametro?: number;
 
   // Selección de Resistencia y Tipo
   tipoSeccion: string = 'rectangular'; 
@@ -43,44 +41,44 @@ export class CalculadoraComponent {
   };
 
   calcular() {
-    // 1. Calcular Volumen base (m3)
+    // Usamos (this.valor || 0) para evitar errores si el campo está vacío
     if (this.tipoSeccion === 'rectangular') {
-      this.volumen = this.largo * this.ancho * this.alto;
+      this.volumen = (this.largo || 0) * (this.ancho || 0) * (this.alto || 0);
     } else {
-      let radio = this.diametro / 2;
-      this.volumen = Math.PI * Math.pow(radio, 2) * this.alto;
+      let radio = (this.diametro || 0) / 2;
+      this.volumen = Math.PI * Math.pow(radio, 2) * (this.alto || 0);
     }
 
-    // 2. Aplicar Dosificación + 5% Desperdicio
-    const base = this.dosificacionBase[this.fcSeleccionado];
-    const factorDesperdicio = 1.05;
+    if (this.volumen > 0) {
+      const base = this.dosificacionBase[this.fcSeleccionado];
+      const factorDesperdicio = 1.05;
 
-    this.cemento = this.volumen * base.cem * factorDesperdicio;
-    this.arena = this.volumen * base.are * factorDesperdicio;
-    this.piedra = this.volumen * base.pie * factorDesperdicio;
-    this.agua = this.volumen * base.agu * factorDesperdicio;
+      this.cemento = this.volumen * base.cem * factorDesperdicio;
+      this.arena = this.volumen * base.are * factorDesperdicio;
+      this.piedra = this.volumen * base.pie * factorDesperdicio;
+      this.agua = this.volumen * base.agu * factorDesperdicio;
+    }
   }
 
   limpiar() {
-    this.largo = 0;
-    this.ancho = 0;
-    this.alto = 0;
-    this.diametro = 0;
+    // 2. Al limpiar, volvemos a poner undefined para que regrese el placeholder
+    this.largo = undefined;
+    this.ancho = undefined;
+    this.alto = undefined;
+    this.diametro = undefined;
     this.volumen = 0;
     this.zona = '';
-    // Los resultados también se limpian para que desaparezca el card
     this.cemento = 0;
     this.arena = 0;
     this.piedra = 0;
   }
 
   guardarProyecto() {
-    if (!this.zona) {
-      alert("Por favor, identifica la zona antes de guardar.");
+    if (!this.zona || this.volumen <= 0) {
+      alert("Por favor, identifica la zona y realiza un cálculo válido antes de guardar.");
       return;
     }
     
-    // Creamos el objeto con los datos actuales
     const registro = {
       fecha: new Date(),
       zona: this.zona,
@@ -90,13 +88,7 @@ export class CalculadoraComponent {
       piedra: this.piedra
     };
 
-    // Lo agregamos al historial local (unshift lo pone al principio de la lista)
     this.historial.unshift(registro);
-
-    console.log("Guardado en historial local:", registro);
     alert("¡Registro guardado con éxito para: " + this.zona + "!");
-    
-    // Opcional: limpiar después de guardar
-    // this.limpiar(); 
   }
-} // <--- Esta es la llave que faltaba para cerrar la clase
+}
