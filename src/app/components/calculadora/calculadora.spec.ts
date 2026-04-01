@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Calculadora } from './calculadora';
+import { Calculadora } from './calculadora.component';
 
-describe('Calculadora', () => {
+describe('CalculadoraComponent', () => {
   let component: Calculadora;
   let fixture: ComponentFixture<Calculadora>;
 

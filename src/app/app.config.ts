@@ -16,7 +16,7 @@ const firebaseConfig = {
   measurementId: "G-SPHJVZ8TRC"
 };
 
-// ESTA ES LA LÍNEA QUE FALTA (El export)
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),

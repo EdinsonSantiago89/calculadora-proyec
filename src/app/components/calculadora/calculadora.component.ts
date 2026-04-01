@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -9,19 +9,14 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './calculadora.component.html',
   styleUrls: ['./calculadora.component.css']
 })
-export class CalculadoraComponent {
-  // Variables de identificación e historial
+export class CalculadoraComponent implements OnInit {
+  // Parámetros
   zona: string = '';
-  historial: any[] = [];
-
-  // 1. IMPORTANTE: Inicializamos como undefined para que se vea el placeholder
-  largo?: number;
-  ancho?: number;
-  alto?: number;
-  diametro?: number;
-
-  // Selección de Resistencia y Tipo
-  tipoSeccion: string = 'rectangular'; 
+  tipoSeccion: string = 'rectangular';
+  largo!: number;
+  ancho!: number;
+  diametro!: number;
+  alto!: number;
   fcSeleccionado: number = 210;
 
   // Resultados
@@ -31,64 +26,60 @@ export class CalculadoraComponent {
   piedra: number = 0;
   agua: number = 0;
 
-  // Tabla de dosificación por m3
-  dosificacionBase: any = {
-    140: { cem: 7.01, are: 0.51, pie: 0.64, agu: 0.184 },
-    175: { cem: 8.43, are: 0.54, pie: 0.55, agu: 0.185 },
-    210: { cem: 9.73, are: 0.52, pie: 0.53, agu: 0.186 },
-    245: { cem: 11.50, are: 0.50, pie: 0.51, agu: 0.187 },
-    280: { cem: 13.34, are: 0.45, pie: 0.51, agu: 0.189 }
-  };
+  // Estado
+  historial: any[] = [];
+  isDarkMode: boolean = true;
+
+  ngOnInit() {
+    const saved = localStorage.getItem('historial_calculos');
+    if (saved) this.historial = JSON.parse(saved);
+  }
 
   calcular() {
-    // Usamos (this.valor || 0) para evitar errores si el campo está vacío
-    if (this.tipoSeccion === 'rectangular') {
-      this.volumen = (this.largo || 0) * (this.ancho || 0) * (this.alto || 0);
-    } else {
-      let radio = (this.diametro || 0) / 2;
-      this.volumen = Math.PI * Math.pow(radio, 2) * (this.alto || 0);
-    }
+  // 1. Cálculo del Volumen base (m3)
+  if (this.tipoSeccion === 'rectangular') {
+    this.volumen = this.largo * this.ancho * this.alto;
+  } else {
+    this.volumen = Math.PI * Math.pow((this.diametro / 2), 2) * this.alto;
+  }
 
-    if (this.volumen > 0) {
-      const base = this.dosificacionBase[this.fcSeleccionado];
-      const factorDesperdicio = 1.05;
+  // 2. Definición de la tabla técnica (según tu imagen de Excel)
+  const tablaDosificacion: any = {
+    140: { cem: 7.01, are: 0.51, pie: 0.64, agu: 184 },
+    175: { cem: 8.43, are: 0.54, pie: 0.55, agu: 185 },
+    210: { cem: 9.73, are: 0.52, pie: 0.53, agu: 186 },
+    245: { cem: 11.50, are: 0.50, pie: 0.51, agu: 187 },
+    280: { cem: 13.34, are: 0.45, pie: 0.51, agu: 189 }
+  };
 
-      this.cemento = this.volumen * base.cem * factorDesperdicio;
-      this.arena = this.volumen * base.are * factorDesperdicio;
-      this.piedra = this.volumen * base.pie * factorDesperdicio;
-      this.agua = this.volumen * base.agu * factorDesperdicio;
-    }
+  // Obtener factores según la resistencia seleccionada
+  const factores = tablaDosificacion[this.fcSeleccionado];
+
+  // 3. Aplicación de desperdicio (+5%)
+  const desperdicio = 1.05;
+
+  // 4. Cálculos finales
+  this.cemento = (this.volumen * factores.cem) * desperdicio;
+  this.arena = (this.volumen * factores.are) * desperdicio;
+  this.piedra = (this.volumen * factores.pie) * desperdicio;
+  this.agua = (this.volumen * factores.agu) * desperdicio;
+}
+
+  guardarProyecto() {
+    if (this.volumen <= 0) return;
+    const registro = { fecha: new Date(), zona: this.zona || 'Sin zona', cemento: this.cemento };
+    this.historial.unshift(registro);
+    localStorage.setItem('historial_calculos', JSON.stringify(this.historial));
   }
 
   limpiar() {
-    // 2. Al limpiar, volvemos a poner undefined para que regrese el placeholder
-    this.largo = undefined;
-    this.ancho = undefined;
-    this.alto = undefined;
-    this.diametro = undefined;
-    this.volumen = 0;
     this.zona = '';
-    this.cemento = 0;
-    this.arena = 0;
-    this.piedra = 0;
+    this.largo = this.ancho = this.diametro = this.alto = undefined as any;
+    this.volumen = 0;
   }
 
-  guardarProyecto() {
-    if (!this.zona || this.volumen <= 0) {
-      alert("Por favor, identifica la zona y realiza un cálculo válido antes de guardar.");
-      return;
-    }
-    
-    const registro = {
-      fecha: new Date(),
-      zona: this.zona,
-      volumen: this.volumen,
-      cemento: this.cemento,
-      arena: this.arena,
-      piedra: this.piedra
-    };
-
-    this.historial.unshift(registro);
-    alert("¡Registro guardado con éxito para: " + this.zona + "!");
+  toggleTema() {
+    this.isDarkMode = !this.isDarkMode;
+    document.body.classList.toggle('light-mode', !this.isDarkMode);
   }
 }

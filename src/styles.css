@@ -1,1 +1,116 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@700&display=swap');
+:root {
+  --industrial-gray: #4a4e52;
+  --metal-dark: #2c2f33;
+  --panel-bg: #d1d5d8;
+  --accent-yellow: #f8c028;
+  --lcd-bg: #1a1e23;
+  --lcd-text: #00ff41; /* Verde Matrix/Digital */
+  --border-metal: #8e9499;
+}
+
+body {
+  background: radial-gradient(circle, #5a5f64 0%, #2c2f33 100%) !important;
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+/* El contenedor principal como un tablero de metal */
+.custom-card {
+  background: var(--panel-bg) !important;
+  border: 3px solid var(--border-metal) !important;
+  border-radius: 15px !important;
+  box-shadow: 
+    10px 10px 20px rgba(0,0,0,0.4),
+    inset 2px 2px 5px rgba(255,255,255,0.5) !important;
+}
+
+/* Inputs con efecto "hundido" en el panel */
+.custom-input {
+  background: #e9ecef !important;
+  border: 2px solid var(--border-metal) !important;
+  box-shadow: inset 2px 2px 5px rgba(0,0,0,0.2) !important;
+  font-weight: 700 !important;
+  color: #333 !important;
+}
+
+/* Título estilo placa metálica */
+h4, h5 {
+  color: #2c2f33;
+  text-shadow: 1px 1px 0px rgba(255,255,255,0.5);
+  letter-spacing: 1px;
+}
+
+/* Los Tiles de resultados (Pantallas LCD) */
+.result-tile {
+  background: var(--lcd-bg) !important; /* Mantiene el fondo negro industrial */
+  border: 4px solid #444 !important;
+  border-radius: 8px !important;
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 0 15px rgba(0,0,0,0.8) !important;
+  
+  /* Asegura que el contenido interno tenga buen contraste por defecto */
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Efecto de cristal sobre el LCD */
+.result-tile::after {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 50%;
+  background: linear-gradient(rgba(255,255,255,0.05), transparent);
+}
+
+.result-tile .h4 {
+  font-family: 'Courier New', monospace; /* Tipo pantalla digital */
+  color: #00ff41 !important; /* Verde Matrix brillante */
+  text-shadow: 0 0 8px rgba(0, 255, 65, 0.8) !important; /* Brillo más intenso */
+  display: block;
+  margin-top: 10px; /* Separación del icono */
+  margin-bottom: 2px;
+}
+
+/* Botones estilo Maquinaria */
+.btn-warning {
+  background: linear-gradient(to bottom, #fdd835, #f8c028) !important;
+  border: 2px solid #c79a00 !important;
+  border-bottom: 5px solid #a47e00 !important;
+  color: #111 !important;
+  transition: all 0.1s;
+}
+
+.btn-warning:active {
+  transform: translateY(3px);
+  border-bottom: 2px solid #a47e00 !important;
+}
+
+/* Iconos */
+.bi {
+  filter: drop-shadow(0 0 5px rgba(248, 192, 40, 0.4));
+}
+
+/* Ajuste del texto de la etiqueta (el que está en negro en tu imagen) */
+.result-tile small.text-light.fw-bold {
+  color: #d1d5d8 !important; /* Un gris claro para que se vea sobre el negro */
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  opacity: 1 !important; /* Asegurar que no sea transparente */
+  text-shadow: 0 0 1px rgba(0,0,0,0.5); /* Ayuda a que se lea */
+}
+
+/* Ajuste del icono para mayor contraste */
+.result-tile i {
+  color: #f8c028 !important; /* Amarillo para cemento, arena, piedra */
+}
+
+.result-tile i.bi-droplet-fill {
+  color: #55cfff !important; /* Un azul más claro para el agua */
+}
+
+/* Opcional: Asegurar que el contenedor de resultados no toque el borde en móviles */
+@media (max-width: 991px) {
+  .col-lg-6.card {
+    margin-top: 2rem !important;
+  }
+}

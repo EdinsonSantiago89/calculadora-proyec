@@ -1,88 +1,112 @@
-<div class="container mt-4">
-  <h2>Calculadora de Concreto</h2>
-  
-  <div class="card p-3 shadow">
-    <label>Tipo de Columna:</label>
-    <select [(ngModel)]="tipoSeccion" class="form-control mb-3">
-      <option value="rectangular">Rectangular</option>
-      <option value="circular">Circular</option>
-    </select>
+<div class="container py-4">
+  <div class="row g-4 justify-content-center">
+    
+    <div class="col-lg-5">
+      <div class="card p-4 custom-card">
+        <h4 class="fw-bold mb-4 text-center border-bottom pb-2">
+          <i class="bi bi-gear-fill me-2"></i>PARÁMETROS DE OBRA
+        </h4>
 
-    <div *ngIf="tipoSeccion === 'rectangular'">
-      <input type="number" [(ngModel)]="largo" placeholder="Largo (m)" class="form-control mb-2">
-      <input type="number" [(ngModel)]="ancho" placeholder="Ancho (m)" class="form-control mb-2">
+        <div class="mb-3">
+          <label class="form-label small fw-bold">UBICACIÓN EN OBRA</label>
+          <input type="text" [(ngModel)]="zona" placeholder="Ej: 3D2" class="form-control custom-input text-uppercase">
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label small fw-bold">TIPO DE ELEMENTO</label>
+          <select [(ngModel)]="tipoSeccion" class="form-select custom-input">
+            <option value="rectangular">Columna Rectangular</option>
+            <option value="circular">Columna Circular</option>
+          </select>
+        </div>
+
+        <div class="row g-3 mb-3">
+          <ng-container *ngIf="tipoSeccion === 'rectangular'">
+            <div class="col-6">
+              <label class="form-label small fw-bold">ANCHO (m)</label>
+              <input type="number" [(ngModel)]="largo" class="form-control custom-input">
+            </div>
+            <div class="col-6">
+              <label class="form-label small fw-bold">LARGO (m)</label>
+              <input type="number" [(ngModel)]="ancho" class="form-control custom-input">
+            </div>
+          </ng-container>
+
+          <div class="col-6" *ngIf="tipoSeccion === 'circular'">
+            <label class="form-label small fw-bold">DIÁMETRO (m)</label>
+            <input type="number" [(ngModel)]="diametro" class="form-control custom-input">
+          </div>
+
+          <div class="col-6">
+            <label class="form-label small fw-bold">ALTURA (m)</label>
+            <input type="number" [(ngModel)]="alto" class="form-control custom-input">
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label small fw-bold">RESISTENCIA f'c (kg/cm²)</label>
+          <select [(ngModel)]="fcSeleccionado" class="form-select custom-input">
+            <option *ngFor="let res of [140, 175, 210, 245, 280]" [value]="res">{{res}}</option>
+          </select>
+        </div>
+
+        <button (click)="calcular()" class="btn btn-warning w-100 py-3 fw-bold">
+          <i class="bi bi-calculator me-2"></i>CALCULAR MATERIALES
+        </button>
+      </div>
     </div>
 
-    <div *ngIf="tipoSeccion === 'circular'">
-      <input type="number" [(ngModel)]="diametro" placeholder="Diámetro (m)" class="form-control mb-2">
+    <div class="col-lg-6" *ngIf="volumen > 0">
+      <div class="card p-4 custom-card">
+        <h5 class="fw-bold mb-4 text-center border-bottom pb-2 text-uppercase">
+          Cálculo de Materiales <small class="text-muted">(+5% Desp.)</small>
+        </h5>
+        
+        <div class="row g-3">
+          <div class="col-6">
+            <div class="result-tile p-3 text-center rounded">
+              <i class="bi bi-box-seam h2 text-warning d-block mb-1"></i>
+              <span class="d-block h4 fw-bold mb-0">{{cemento | number:'1.1-1'}}</span>
+              <small class="text-white-50 fw-bold">BULTOS CEMENTO</small>
+            </div>
+          </div>
+
+          <div class="col-6">
+            <div class="result-tile p-3 text-center rounded">
+              <i class="bi bi-moisture h2 text-warning d-block mb-1"></i>
+              <span class="d-block h4 fw-bold mb-0">{{arena | number:'1.2-2'}}</span>
+              <small class="text-white-50 fw-bold">ARENA m³</small>
+            </div>
+          </div>
+
+          <div class="col-6">
+            <div class="result-tile p-3 text-center rounded">
+              <i class="bi bi-grid-3x3-gap-fill h2 text-warning d-block mb-1"></i>
+              <span class="d-block h4 fw-bold mb-0">{{piedra | number:'1.2-2'}}</span>
+              <small class="text-white-50 fw-bold">PIEDRA m³</small>
+            </div>
+          </div>
+
+          <div class="col-6">
+            <div class="result-tile p-3 text-center rounded">
+              <i class="bi bi-droplet-fill h2 text-info d-block mb-1"></i>
+              <span class="d-block h4 fw-bold mb-0">{{agua | number:'1.0-0'}}</span>
+              <small class="text-white-50 fw-bold">AGUA Lts</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex gap-5 mt-4">
+          <button (click)="guardarProyecto()" class="btn btn-warning w-100 py-2 fw-bold">
+            <i class="bi bi-save me-2"></i>GUARDAR
+          </button>
+        
+          <button (click)="limpiar()" class="btn btn-warning w-100 py-2 fw-bold" style="background: #bbb;">
+            <i class="bi bi-trash me-2"></i>LIMPIAR
+          </button>
+        </div>
+      </div>
     </div>
 
-    <input type="number" [(ngModel)]="alto" placeholder="Alto (m)" class="form-control mb-2">
-
-    <label>Resistencia f'c (kg/cm2):</label>
-    <select [(ngModel)]="fcSeleccionado" class="form-control mb-3">
-      <option *ngFor="let res of [140, 175, 210, 245, 280]" [value]="res">{{res}}</option>
-    </select>
-
-    <button (click)="calcular()" class="btn btn-primary w-100">CALCULAR MATERIALES</button>
-  </div>
-
-  <div class="card mt-4 p-3 bg-light shadow-sm" *ngIf="volumen > 0">
-  <h4 class="text-primary">Resultados Finales</h4>
-  
-  <div class="row mb-3">
-    <div class="col">
-      <label><b>Ubicación en Obra:</b></label>
-      <input type="text" [(ngModel)]="zona" placeholder="Ej: Eje A-1, Nivel 2" class="form-control">
-    </div>
-  </div>
-
-  <ul class="list-group list-group-flush mb-3">
-    <li class="list-group-item d-flex justify-content-between">
-      <span>Bolsas de Cemento:</span> <strong>{{cemento | number:'1.1-1'}}</strong>
-    </li>
-    <li class="list-group-item d-flex justify-content-between">
-      <span>Arena (m³):</span> <strong>{{arena | number:'1.2-2'}}</strong>
-    </li>
-    <li class="list-group-item d-flex justify-content-between">
-      <span>Piedra (m³):</span> <strong>{{piedra | number:'1.2-2'}}</strong>
-    </li>
-  </ul>
-
-  <div class="d-grid gap-2 d-md-flex justify-content-md-center">
-    <button (click)="guardarProyecto()" class="btn btn-success me-md-2">
-       💾 Guardar Registro
-    </button>
-    <button (click)="limpiar()" class="btn btn-outline-secondary">
-       🧹 Limpiar Todo
-    </button>
-  </div>
-</div>
-
-<div class="card mt-5 shadow-sm" *ngIf="historial.length > 0">
-  <div class="card-header bg-dark text-white">
-    <h5 class="mb-0">Historial de Cálculos Recientes</h5>
-  </div>
-  <div class="table-responsive">
-    <table class="table table-hover mb-0">
-      <thead class="table-light">
-        <tr>
-          <th>Fecha</th>
-          <th>Zona/Ubicación</th>
-          <th>Volumen</th>
-          <th>Cemento</th>
-          <th>Materiales (A/P)</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let item of historial">
-          <td>{{ item.fecha | date:'shortTime' }}</td>
-          <td><strong>{{ item.zona }}</strong></td>
-          <td>{{ item.volumen | number:'1.2-2' }} m³</td>
-          <td><span class="badge bg-warning text-dark">{{ item.cemento | number:'1.1-1' }} bultos</span></td>
-          <td>{{ item.arena | number:'1.2-2' }} / {{ item.piedra | number:'1.2-2' }} m³</td>
-        </tr>
-      </tbody>
-    </table>
   </div>
 </div>
